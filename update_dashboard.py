@@ -10,7 +10,7 @@ import requests
 API_BASE = "https://api.mantrachain.io"
 HTML_PATH = Path(__file__).resolve().parent / "tokenomics_daily.html"
 BLOCKS_PER_YEAR = 9_562_910
-SECONDS_PER_YEAR = 365 * 24 * 60 * 60
+SECONDS_PER_YEAR = 365.25 * 24 * 60 * 60
 SECONDS_PER_BLOCK = SECONDS_PER_YEAR / BLOCKS_PER_YEAR
 BUCKET_KEYS = ("mi", "le", "ou", "gd", "tb", "tr", "ps", "se", "ec")
 
