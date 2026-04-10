@@ -148,6 +148,7 @@ def update_raw(raw: list[dict], target_date: str, minted_mantra: float) -> bool:
                 break
             row["ci"] = norm_number(float(raw[i - 1]["ci"]) + float(row["di"]))
 
+        # Preserve any pre-existing supply offset (e.g., post-redenomination adjustments).
         ts_offset = float(row["ts"]) - float(row["cs"]) - float(row["lk"])
         row["gc"] = norm_number(sum_buckets(row), decimals=0)
         row["cs"] = norm_number(float(row["gc"]) + float(row["ci"]))
@@ -202,8 +203,8 @@ def main() -> None:
 
     blocks_in_day = last_block - first_block + 1
     avg_provisions = (prov_start + prov_end) / 2
-    minted_amantra_base_units = avg_provisions * blocks_in_day / BLOCKS_PER_YEAR
-    minted_mantra = round(minted_amantra_base_units / 1e18, 2)
+    minted_mantra_base_units = avg_provisions * blocks_in_day / BLOCKS_PER_YEAR
+    minted_mantra = round(minted_mantra_base_units / 1e18, 2)
 
     changed = update_html_raw(target_day.isoformat(), minted_mantra)
     if changed:
