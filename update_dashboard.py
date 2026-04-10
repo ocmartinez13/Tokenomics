@@ -10,7 +10,9 @@ import requests
 API_BASE = "https://api.mantrachain.io"
 HTML_PATH = Path(__file__).resolve().parent / "tokenomics_daily.html"
 BLOCKS_PER_YEAR = 9_562_910
-SECONDS_PER_YEAR = 365.25 * 24 * 60 * 60
+DAYS_PER_YEAR = 365.25
+SECONDS_PER_YEAR = DAYS_PER_YEAR * 24 * 60 * 60
+BASE_UNITS_PER_MANTRA = 1e18
 SECONDS_PER_BLOCK = SECONDS_PER_YEAR / BLOCKS_PER_YEAR
 BUCKET_KEYS = ("mi", "le", "ou", "gd", "tb", "tr", "ps", "se", "ec")
 
@@ -204,7 +206,7 @@ def main() -> None:
     blocks_in_day = last_block - first_block + 1
     avg_provisions = (prov_start + prov_end) / 2
     minted_mantra_base_units = avg_provisions * blocks_in_day / BLOCKS_PER_YEAR
-    minted_mantra = round(minted_mantra_base_units / 1e18, 2)
+    minted_mantra = round(minted_mantra_base_units / BASE_UNITS_PER_MANTRA, 2)
 
     changed = update_html_raw(target_day.isoformat(), minted_mantra)
     if changed:
