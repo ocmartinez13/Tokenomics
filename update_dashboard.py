@@ -9,6 +9,7 @@ import requests
 
 API_BASE = "https://api.mantrachain.io"
 HTML_PATH = Path(__file__).resolve().parent / "tokenomics_daily.html"
+# Chain parameter provided for daily inflation estimation.
 BLOCKS_PER_YEAR = 9_562_910
 DAYS_PER_YEAR = 365.25
 SECONDS_PER_YEAR = DAYS_PER_YEAR * 24 * 60 * 60
@@ -76,7 +77,7 @@ def find_first_block_at_or_after(
     if target_time > latest_time:
         raise ValueError("Target time is in the future")
 
-    est_delta = int((latest_time - target_time).total_seconds() / SECONDS_PER_BLOCK)
+    est_delta = round((latest_time - target_time).total_seconds() / SECONDS_PER_BLOCK)
     guess = max(1, min(latest_height, latest_height - est_delta))
     guess_time = lcd.block_time(guess)
 
