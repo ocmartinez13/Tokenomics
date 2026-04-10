@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tokenomics-static-site",
+  "name": "ops-tokenomics",
   "compatibility_date": "2026-04-10",
   "assets": {
     "directory": "."
