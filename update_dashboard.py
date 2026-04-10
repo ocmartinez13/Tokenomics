@@ -11,6 +11,7 @@ API_BASE = "https://api.mantrachain.io"
 HTML_PATH = Path(__file__).resolve().parent / "tokenomics_daily.html"
 BLOCKS_PER_YEAR = 9_562_910
 SECONDS_PER_YEAR = 365 * 24 * 60 * 60
+BUCKET_KEYS = ("mi", "le", "ou", "gd", "tb", "tr", "ps", "se", "ec")
 
 
 def parse_time(value: str) -> datetime:
@@ -116,7 +117,7 @@ def find_first_block_at_or_after(
 
 
 def sum_buckets(row: dict) -> float:
-    return float(row["mi"]) + float(row["le"]) + float(row["ou"]) + float(row["gd"]) + float(row["tb"]) + float(row["tr"]) + float(row["ps"]) + float(row["se"]) + float(row["ec"])
+    return sum(float(row[key]) for key in BUCKET_KEYS)
 
 
 def norm_number(value: float, decimals: int = 2) -> int | float:
@@ -174,6 +175,7 @@ def update_html_raw(target_date: str, minted_mantra: float) -> bool:
 
 
 def main() -> None:
+    """Update yesterday's forecast row with actual inflation data from MANTRA LCD."""
     target_day = date.today() - timedelta(days=1)
     target_start = datetime.combine(target_day, time.min, tzinfo=timezone.utc)
     next_start = target_start + timedelta(days=1)

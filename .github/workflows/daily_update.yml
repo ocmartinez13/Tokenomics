@@ -24,5 +24,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tokenomics_daily.html
-          git diff --cached --quiet || git commit -m "chore: update inflation actuals for $(date -u +%Y-%m-%d --date='yesterday')"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update inflation actuals for $(date -u +%Y-%m-%d --date='yesterday')"
+            git push
+          fi
