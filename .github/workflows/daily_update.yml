@@ -1,0 +1,30 @@
+name: Daily tokenomics update
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests==2.32.3
+      - name: Run update script
+        run: python update_dashboard.py
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tokenomics_daily.html
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update inflation actuals for $(date -u +%Y-%m-%d --date='yesterday')"
+            git push
+          fi
