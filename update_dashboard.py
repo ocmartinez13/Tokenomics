@@ -11,6 +11,7 @@ API_BASE = "https://api.mantrachain.io"
 HTML_PATH = Path(__file__).resolve().parent / "tokenomics_daily.html"
 BLOCKS_PER_YEAR = 9_562_910
 SECONDS_PER_YEAR = 365 * 24 * 60 * 60
+SECONDS_PER_BLOCK = SECONDS_PER_YEAR / BLOCKS_PER_YEAR
 BUCKET_KEYS = ("mi", "le", "ou", "gd", "tb", "tr", "ps", "se", "ec")
 
 
@@ -73,12 +74,11 @@ def find_first_block_at_or_after(
     if target_time > latest_time:
         raise ValueError("Target time is in the future")
 
-    seconds_per_block = SECONDS_PER_YEAR / BLOCKS_PER_YEAR
-    est_delta = int((latest_time - target_time).total_seconds() / seconds_per_block)
+    est_delta = int((latest_time - target_time).total_seconds() / SECONDS_PER_BLOCK)
     guess = max(1, min(latest_height, latest_height - est_delta))
     guess_time = lcd.block_time(guess)
 
-    day_span = max(1, int(24 * 60 * 60 / seconds_per_block))
+    day_span = max(1, int(24 * 60 * 60 / SECONDS_PER_BLOCK))
     step = day_span
 
     if guess_time >= target_time:
@@ -202,8 +202,8 @@ def main() -> None:
 
     blocks_in_day = last_block - first_block + 1
     avg_provisions = (prov_start + prov_end) / 2
-    minted_amantra = avg_provisions * blocks_in_day / BLOCKS_PER_YEAR
-    minted_mantra = round(minted_amantra / 1e18, 2)
+    minted_amantra_base_units = avg_provisions * blocks_in_day / BLOCKS_PER_YEAR
+    minted_mantra = round(minted_amantra_base_units / 1e18, 2)
 
     changed = update_html_raw(target_day.isoformat(), minted_mantra)
     if changed:
